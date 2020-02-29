@@ -33,7 +33,6 @@ func (repo *repository) GetBalance(ctx context.Context, phoneNumber string) (int
 
 	if err := repo.db.Where("phone_number = ?", phoneNumber).Find(&user).Error; err != nil {
 		fmt.Println("error: ", err.Error())
-
 		return -1, err
 	}
 
@@ -41,6 +40,12 @@ func (repo *repository) GetBalance(ctx context.Context, phoneNumber string) (int
 }
 
 func (repo *repository) UpdateBalance(ctx context.Context, phoneNumber string, amount int) (string, error) {
+
+	var user Entity.UserEntity
+	if err := repo.db.Where("phone_number = ?", phoneNumber).Find(&user).Error; err != nil {
+		fmt.Println("error: ", err.Error())
+		return "error", err
+	}
 
 	return "", nil
 }

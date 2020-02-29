@@ -31,20 +31,22 @@ func main() {
 			"caller", log.DefaultCaller,
 		)
 	}
-
 	var db *gorm.DB
 	{
 		dbDriver := "sqlite3"
 		dbName := "demo.db"
 
-		db, err := gorm.Open(dbDriver, dbName)
+		dbLoaded, err := gorm.Open(dbDriver, dbName) // Rename the variable
 		if err != nil {
 			_ = level.Error(logger).Log("exit", err)
 			os.Exit(-1)
 		}
 
-		db.AutoMigrate(&Entity.UserEntity{})
-	}
+		dbLoaded.AutoMigrate(&Entity.UserEntity{})
+
+		db = dbLoaded // Set `db` of the outer scope to `dbLoaded` of this scope
+	} // dbLoaded is lost here, but it can be accessed using `db`
+
 	flag.Parse()
 	ctx := context.Background()
 	var srv service.WalletService
