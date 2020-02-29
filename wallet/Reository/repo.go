@@ -10,7 +10,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-var RepoErr = errors.New("Unable to handle Repo Request")
+var RepoErr = errors.New("Unable to handle Repo Request for wallet service")
 
 type repository struct {
 	db     *gorm.DB
