@@ -1,6 +1,7 @@
 package http
 
 import (
+	"arvan/voucher/Entity"
 	"context"
 	"encoding/json"
 	"github.com/gorilla/mux"
@@ -12,7 +13,7 @@ type GetVoucherCodeStatusRequest struct {
 }
 
 type GetVoucherCodeStatusResponse struct {
-	Balance int `json:"balance"`
+	UsersUsedVoucherCode []Entity.VoucherUserEntity `json:"used_voucher_code_users"`
 }
 
 type SubmitVoucherCodeRequest struct {

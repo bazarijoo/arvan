@@ -8,7 +8,7 @@ import (
 )
 
 type VoucherService interface {
-	GetVoucherCodeStatus(ctx context.Context, voucherCode string) error
+	GetVoucherCodeStatus(ctx context.Context, voucherCode string) ([]VoucherUserEntity, error)
 	SubmitVoucherCode(ctx context.Context, phoneNumber string, voucherCode string) error
 }
 
@@ -24,16 +24,16 @@ func NewService(rep VoucherRepository, logger log.Logger) VoucherService {
 	}
 }
 
-func (s service) GetVoucherCodeStatus(ctx context.Context, phoneNumber string) error {
-	//logger := log.With(s.logger, "method", "GetBalance")
+func (s service) GetVoucherCodeStatus(ctx context.Context, voucherCode string) ([]VoucherUserEntity, error) {
+	logger := log.With(s.logger, "method", "GetVoucherCodeStatus")
 
-	//balance, err := s.repository.GetBalance(ctx, phoneNumber)
-	//if err != nil {
-	//	_ = level.Error(logger).Log("err", err)
-	//	return -1, err
-	//}
-	//_ = logger.Log("Got balance for "+phoneNumber+" :", balance)
-	return nil
+	usedVoucherUsers, err := s.repository.GetVoucherCodeStatus(ctx, voucherCode)
+	if err != nil {
+		_ = level.Error(logger).Log("err", err)
+		return nil, err
+	}
+	_ = logger.Log("Got users aho used the voucher code: " + voucherCode + " :")
+	return usedVoucherUsers, nil
 
 }
 

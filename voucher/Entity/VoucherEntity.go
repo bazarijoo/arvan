@@ -17,6 +17,6 @@ func (VoucherEntity) TableName() string {
 }
 
 type VoucherRepository interface {
-	GetVoucherCodeStatus(ctx context.Context, voucherCode string) error
+	GetVoucherCodeStatus(ctx context.Context, voucherCode string) ([]VoucherUserEntity, error)
 	SubmitVoucherCode(ctx context.Context, phoneNumber string, voucherCode string) error
 }

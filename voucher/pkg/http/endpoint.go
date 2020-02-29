@@ -21,8 +21,8 @@ func MakeEndpoints(s VoucherService) Endpoints {
 func makeGetVoucherCodeStatusEndpoint(s VoucherService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(GetVoucherCodeStatusRequest)
-		err := s.GetVoucherCodeStatus(ctx, req.VoucherCode)
-		return GetVoucherCodeStatusResponse{Balance: 3}, err
+		usedVoucherUsers, err := s.GetVoucherCodeStatus(ctx, req.VoucherCode)
+		return GetVoucherCodeStatusResponse{UsersUsedVoucherCode: usedVoucherUsers}, err
 	}
 }
 

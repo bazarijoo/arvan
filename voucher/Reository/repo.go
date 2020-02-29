@@ -12,6 +12,8 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+var RepoErr = errors.New("Unable to handle Repo Request for wallet service")
+
 type repository struct {
 	db     *gorm.DB
 	logger log.Logger
@@ -24,19 +26,18 @@ func NewRepository(db *gorm.DB, logger log.Logger) Entity.VoucherRepository {
 	}
 }
 
-func (repo *repository) GetVoucherCodeStatus(ctx context.Context, phoneNumber string) error {
-	//var user Entity.UserEntity
-	//
-	//if phoneNumber == "" {
-	//	return -1, RepoErr
-	//}
-	//
-	//if err := repo.db.Where("phone_number = ?", phoneNumber).Find(&user).Error; err != nil {
-	//	fmt.Println("error: ", err.Error())
-	//	return -1, err
-	//}
+func (repo *repository) GetVoucherCodeStatus(ctx context.Context, voucherCode string) ([]Entity.VoucherUserEntity, error) {
+	var voucherUsers []Entity.VoucherUserEntity
 
-	return nil
+	if voucherCode == "" {
+		return nil, RepoErr
+	}
+	if err := repo.db.Where("voucher_code = ? AND is_used = ?", voucherCode, true).Find(&voucherUsers).Error; err != nil {
+		fmt.Println("error: ", err.Error())
+		return nil, err
+	}
+
+	return voucherUsers, nil
 }
 
 func (repo *repository) SubmitVoucherCode(ctx context.Context, phoneNumber string, voucherCode string) error {
