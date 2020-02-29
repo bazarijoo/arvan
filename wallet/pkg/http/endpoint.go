@@ -29,7 +29,7 @@ func makeGetBalanceEndpoint(s WalletService) endpoint.Endpoint {
 func makeUpdateBalanceEndpoint(s WalletService) endpoint.Endpoint {
 	return func(ctx context.Context, request interface{}) (interface{}, error) {
 		req := request.(UpdateBalanceRequest)
-		ok, err := s.UpdateBalance(ctx, req.PhoneNumber, req.Amount)
+		ok, err := s.UpdateBalance(ctx, req.PhoneNumber, req.Credit)
 
 		return UpdateBalanceResponse{
 			Ok: ok,

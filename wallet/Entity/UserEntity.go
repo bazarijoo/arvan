@@ -13,5 +13,5 @@ func (UserEntity) TableName() string {
 
 type UserRepository interface {
 	GetBalance(ctx context.Context, phoneNumber string) (int, error)
-	UpdateBalance(ctx context.Context, phoneNumber string, amount int) (string, error)
+	UpdateBalance(ctx context.Context, phoneNumber string, credit int) (string, error)
 }

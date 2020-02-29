@@ -17,7 +17,7 @@ type GetBalanceResponse struct {
 
 type UpdateBalanceRequest struct {
 	PhoneNumber string `json:"phone_number"`
-	Amount      int    `json:"amount"`
+	Credit      int    `json:"credit"`
 }
 type UpdateBalanceResponse struct {
 	Ok string `json:"ok"`
@@ -38,7 +38,7 @@ func decodeGetBalanceReq(ctx context.Context, r *http.Request) (interface{}, err
 }
 
 func decodeUpdateBalanceReq(ctx context.Context, r *http.Request) (interface{}, error) {
-	var req UpdateBalanceResponse
+	var req UpdateBalanceRequest
 	err := json.NewDecoder(r.Body).Decode(&req)
 	if err != nil {
 		return nil, err

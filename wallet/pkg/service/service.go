@@ -9,7 +9,7 @@ import (
 
 type WalletService interface {
 	GetBalance(ctx context.Context, phoneNumber string) (int, error)
-	UpdateBalance(ctx context.Context, phoneNumber string, amount int) (string, error)
+	UpdateBalance(ctx context.Context, phoneNumber string, credit int) (string, error)
 }
 
 type service struct {
@@ -37,7 +37,13 @@ func (s service) GetBalance(ctx context.Context, phoneNumber string) (int, error
 
 }
 
-func (s service) UpdateBalance(ctx context.Context, phoneNumber string, amount int) (string, error) {
-	_, _ = s.repository.UpdateBalance(ctx, phoneNumber, amount)
-	return "ok", nil
+func (s service) UpdateBalance(ctx context.Context, phoneNumber string, credit int) (string, error) {
+	logger := log.With(s.logger, "method", "UpdateBalance")
+	msg, err := s.repository.UpdateBalance(ctx, phoneNumber, credit)
+
+	if err != nil {
+		_ = level.Error(logger).Log("err", err)
+		return msg, err
+	}
+	return msg, nil
 }

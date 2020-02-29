@@ -39,13 +39,20 @@ func (repo *repository) GetBalance(ctx context.Context, phoneNumber string) (int
 	return user.Balance, nil
 }
 
-func (repo *repository) UpdateBalance(ctx context.Context, phoneNumber string, amount int) (string, error) {
-
+func (repo *repository) UpdateBalance(ctx context.Context, phoneNumber string, credit int) (string, error) {
 	var user Entity.UserEntity
 	if err := repo.db.Where("phone_number = ?", phoneNumber).Find(&user).Error; err != nil {
 		fmt.Println("error: ", err.Error())
 		return "error", err
 	}
 
-	return "", nil
+	if err := repo.db.Model(&user).Updates(Entity.UserEntity{
+		PhoneNumber: phoneNumber,
+		Balance:     user.Balance + credit,
+	}).Error; err != nil {
+		fmt.Println("error: ", err.Error())
+		return "error in updating balance.", err
+	}
+
+	return "OK", nil
 }
