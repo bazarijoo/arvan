@@ -30,7 +30,6 @@ func (repo *repository) GetBalance(ctx context.Context, phoneNumber string) (int
 	if phoneNumber == "" {
 		return -1, RepoErr
 	}
-
 	if err := repo.db.Where("phone_number = ?", phoneNumber).Find(&user).Error; err != nil {
 		fmt.Println("error: ", err.Error())
 		return -1, err
@@ -40,6 +39,20 @@ func (repo *repository) GetBalance(ctx context.Context, phoneNumber string) (int
 }
 
 func (repo *repository) UpdateBalance(ctx context.Context, phoneNumber string, credit int) (string, error) {
+
+	if err := repo.db.Exec("PRAGMA read_commited = true").Error; err != nil { /// or serializable
+		return "error", err
+	}
+
+	//Transactions in SQLite are SERIALIZABLE. and changes are not visible  to ther db connections prior commit
+	tx := repo.db.Begin()
+
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+
 	var user Entity.UserEntity
 	if err := repo.db.Where("phone_number = ?", phoneNumber).Find(&user).Error; err != nil {
 		fmt.Println("error: ", err.Error())
@@ -54,5 +67,5 @@ func (repo *repository) UpdateBalance(ctx context.Context, phoneNumber string, c
 		return "error in updating balance.", err
 	}
 
-	return "OK", nil
+	return "OK", tx.Commit().Error
 }
